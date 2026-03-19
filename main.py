@@ -1,12 +1,90 @@
 import re
-
+import os
 # ==============================
 # PROGRAM DATABASES
 # ==============================
 
-customer_database = {}
-product_database = {}
+# ==============================
+# CUSTOMER DATABASE
+# ==============================
+customer_database = {
+    "123456": {"auto_id": 1, "name": "Jesus Lucena", "email": "jesus@gmail.com", "phone": "3011234567", "state": True},
+    "654321": {"auto_id": 2, "name": "Ana Torres", "email": "ana@gmail.com", "phone": "3017654321", "state": True},
+    "112233": {"auto_id": 3, "name": "Pedro Perez", "email": "pedro@gmail.com", "phone": "3021122334", "state": True},
+    "445566": {"auto_id": 4, "name": "Maria Gomez", "email": "maria@gmail.com", "phone": "3024455667", "state": True},
+    "778899": {"auto_id": 5, "name": "Luis Sanchez", "email": "luis@gmail.com", "phone": "3037788990", "state": True},
+    "123455": {"auto_id": 6, "name": "Luis Sanchez", "email": "lus@gmail.com", "phone": "307788990", "state": True}
+}
+
+# ==============================
+# PRODUCT DATABASE
+# ==============================
+product_database = {
+    1: ("Pan", 12.0, 100, "Groceries"),
+    2: ("Queso", 20.0, 50, "Groceries"),
+    3: ("Jugo", 10.0, 80, "Groceries"),
+    4: ("Leche", 15.0, 60, "Groceries"),
+    5: ("Zapatos", 120.0, 30, "Footwear"),
+    6: ("Camiseta", 35.0, 40, "Clothing"),
+    7: ("Laptop", 2500.0, 10, "Electronics"),
+    8: ("Teclado", 150.0, 25, "Electronics"),
+    9: ("Silla", 200.0, 15, "Home & Furniture"),
+    10: ("Libro", 50.0, 40, "Stationery")
+}
+
+# ==============================
+# ORDER DATABASE
+# ==============================
 order_database = {}
+
+# Order 1 for Jesus
+order_database[1] = {
+    "cc": "123456",
+    "name": "Jesus Lucena",
+    "producto1": (1, "Pan", 5, 60.0),
+    "producto2": (2, "Queso", 2, 40.0),
+}
+
+# Order 2 for Ana
+order_database[2] = {
+    "cc": "654321",
+    "name": "Ana Torres",
+    "producto1": (3, "Jugo", 3, 30.0),
+    "producto2": (4, "Leche", 4, 60.0),
+}
+
+# Order 3 for Jesus again
+order_database[3] = {
+    "cc": "123456",
+    "name": "Jesus Lucena",
+    "producto1": (5, "Zapatos", 1, 120.0),
+    "producto2": (6, "Camiseta", 2, 70.0),
+}
+
+# Order 4 for Pedro
+order_database[4] = {
+    "cc": "112233",
+    "name": "Pedro Perez",
+    "producto1": (1, "Pan", 10, 120.0),
+    "producto2": (4, "Leche", 5, 75.0),
+}
+
+# Order 5 for Maria
+order_database[5] = {
+    "cc": "445566",
+    "name": "Maria Gomez",
+    "producto1": (7, "Laptop", 1, 2500.0),
+    "producto2": (8, "Teclado", 1, 150.0),
+}
+
+# Order 6 for Luis
+order_database[6] = {
+    "cc": "778899",
+    "name": "Luis Sanchez",
+    "producto1": (9, "Silla", 2, 400.0),
+    "producto2": (10, "Libro", 3, 150.0),
+}
+
 product_categories = (
     "Electronics",
     "Appliances",
@@ -151,6 +229,10 @@ def create_order(customer_id):
         "cc" : customer_id,
         "name": customer_name,
     }
+    Order_history[id_order]  = {
+        "cc" : customer_id,
+        "name": customer_name,
+    }
 
     return id_order
 
@@ -161,9 +243,79 @@ def add_products_order(id_order, product_id, quantity_order, cont):
     total = quantity_order * product_database[product_id][1]
     
     order_database[id_order]["producto"+str(cont)] = (product_id,product_name,quantity_order,total)
+    Order_history[id_order]["producto"+str(cont)] = (product_id,product_name,quantity_order,total)
+
+def orders_consult(order_db,field_value):
+        
+        for pedido in order_db.values():
+                
+            cc = pedido.get("cc"," ")
+
+            if cc == field_value:
+                print("\n\033[34m" + "-"*60)
+                print("ORDER CREATION HISTORY")
+                print("\033[34m" + "-"*60)
+                cc = pedido.get("cc", "")
+                nombre = pedido.get("name", "")
+                
+                print(f"CC: {cc} - Nombre: {nombre}")
+                print("\033[34m" + "-"*60)
+                print(f"{'Producto':<20} {'Cantidad':<10}  {'Price':<10}  {'Total':<20}")
+
+            else:
+                print("\n\033[1;31m" + "-"*60 + f"\nError: There are no orders from this user." + "\n" + "-"*60 + "\033[0m")
+                break
+
+        
+
+        for pedido in order_db.values():
+                
+            cc = pedido.get("cc"," ")
+
+            if cc == field_value:
+                
+                if pedido:
+
+                    # Recorremos todos los productos del pedido
+                    productos = [pedido[k] for k in sorted(pedido.keys()) if k.startswith('producto') and isinstance(pedido[k], tuple)]
+                    
+                    if productos:
+                        for p in productos:
+                            _, producto_nombre, cantidad, total = p
+                            print(f"{producto_nombre:<20} {cantidad:<10} X {total/cantidad:<10} : {total:<20}")
+                            print("\033[34m" + "-"*60)
+                    else:
+                        print("No tiene productos.")
+                        print("\033[34m" + "-"*60)
+                
+                
 
 
+def display_order(order_db):
+    
+    for pedido in order_db.values():
 
+        print("\n\033[34m" + "-"*60)
+        print("ORDER CREATION HISTORY")
+        print("\033[34m" + "-"*60)
+        cc = pedido.get("cc", "")
+        nombre = pedido.get("name", "")
+        
+        print(f"CC: {cc} - Nombre: {nombre}")
+        print("\033[34m" + "-"*60)
+        print(f"{'Producto':<20} {'Cantidad':<10}  {'Price':<10}  {'Total':<20}")
+        
+        # Recorremos todos los productos del pedido
+        productos = [pedido[k] for k in sorted(pedido.keys()) if k.startswith('producto') and isinstance(pedido[k], tuple)]
+        
+        if productos:
+            for p in productos:
+                _, producto_nombre, cantidad, total = p
+                print(f"{producto_nombre:<20} {cantidad:<10} X {total/cantidad:<10} : {total:<20}")
+                print("\033[34m" + "-"*60)
+        else:
+            print("No tiene productos.")
+            print("\033[34m" + "-"*60)
 # ==============================
 # FUNCTION TO DISPLAY TITLES
 # ==============================
@@ -189,7 +341,71 @@ def iterate_list(list):
     title("List Categories")
     for Cont , categorie in enumerate(list):
         print (f"{Cont+1}. {categorie}")
+
+def display_order_summary(order_db):
+
+    for pedido in order_db.values():
+
+        print("\n\033[34m" + "-"*60)
+        print("ORDER CREATION HISTORY")
+        print("\033[34m" + "-"*60)
+        cc = pedido.get("cc", "")
+        nombre = pedido.get("name", "")
         
+        print(f"CC: {cc} - Nombre: {nombre}")
+        print("\033[34m" + "-"*60)
+        print(f"{'Producto':<20} {'Cantidad':<10}  {'Price':<10}  {'Total':<20}")
+        
+        # Recorremos todos los productos del pedido
+        productos = [pedido[k] for k in sorted(pedido.keys()) if k.startswith('producto') and isinstance(pedido[k], tuple)]
+        
+        if productos:
+            for p in productos:
+                _, producto_nombre, cantidad, total = p
+                print(f"{producto_nombre:<20} {cantidad:<10} X {total/cantidad:<10} : {total:<20}")
+                print("\033[34m" + "-"*60)
+        else:
+            print("No tiene productos.")
+            print("\033[34m" + "-"*60)
+
+def Daily_Income_Calculation(order_db):
+
+    total_sum = 0
+    cont = 1
+    
+    for pedido in order_db.values():
+
+        print("\n\033[34m" + "-"*60)
+        print(f"ORDER - N{cont}")
+        print("\033[34m" + "-"*60)
+
+        cont += 1
+        cc = pedido.get("cc", "")
+        nombre = pedido.get("name", "")
+        
+        print(f"CC: {cc} - Nombre: {nombre}")
+        print("\033[34m" + "-"*60)
+        print(f"{'Producto':<20} {'Cantidad':<10}  {'Price':<10}  {'Total':<20}")
+        
+        # Recorremos todos los productos del pedido
+        productos = [pedido[k] for k in sorted(pedido.keys()) if k.startswith('producto') and isinstance(pedido[k], tuple)]
+        
+        if productos:
+            for p in productos:
+                _, producto_nombre, cantidad, total = p
+                print(f"{producto_nombre:<20} {cantidad:<10} X {total/cantidad:<10} : {total:<20}")
+                total_sum += total
+                print("\033[34m" + "-"*60)
+        else:
+            print("No tiene productos.")
+            print("\033[34m" + "-"*60)
+
+
+        print("\n\033[34m" + "-"*60)
+        print(f">> Total profit for the day : ${total_sum}")
+        print("\033[34m" + "-"*60 + "\033[0m")
+
+            
 # ==============================
 # MAIN OPTIONS MENU
 # ==============================
@@ -218,6 +434,8 @@ while ws:
     main()
 
     option = input("\033[34m >> \033[0mEnter an Option: ")
+
+    os.system("cls" if os.name == "nt" else "clear")
 
     print("\n\033[34m" + "-"*60 + "\033[0m")
 
@@ -632,28 +850,54 @@ while ws:
                 continue
 
             # ===== PRODUCTS CREATION HISTORY =====
-
-            print(order_database)
-
-            print("\n\033[34m" + "-"*80)
-            print("PRODUCTS CREATION HISTORY")
-            print("\033[34m" + "-"*80)
-            print(f"{'ID':<5} {'NAME':<22} {'CATEGIRIE':<20} {'STOCK':<10} {'PRICE':<10}")
-            print("-"*80 + "\033[0m")
-
-            for cc, data in Products_history.items():
-                print(
-                    f"\033[1;32m{cc:<5} {data[1]:<22} {data[3]:<20} {data[2]:<10} {data[1]:<10}\033[0m"
-                )
-                print("\033[34m" + "-"*80 + "\033[0m\n")
+            display_order_summary(Order_history)
 
             # Final separator
             print("\033[34m" + "-"*60 + "\033[0m\n")
 
     elif option == "4":
-        print()
+        or_act = True
+
+        if product_database == {} or customer_database == {} or order_database == {}:
+            print("\n\033[1;31m" + "-"*60 + f"\nError: No data was found to create an order." + "\n" + "-"*60 + "\033[0m\n")
+            continue
+
+        title(f"Order")
+
+        while True:
+
+            customer_id = input("\n\033[34m >> \033[0mEnter your CC number: ")
+
+            # Validate empty field
+            error = validate_not_empty(customer_id, "CC Number")
+            if error:
+                print(error)
+                continue
+
+            error = validate_only_numbers(customer_id, "CC Number")
+            if error:
+                print(error)
+                continue
+
+            # Validate numeric and length (6–10 digits)
+            error = validate_numeric_length(customer_id, "CC Number", 6, 10)
+            if error:
+                print(error)
+                continue
+
+            # Validate duplicate ID
+            error = validate_duplicate_id(customer_id, customer_database)
+            if not error:
+                print("\n\033[1;31m" + "-"*60 + f"\nError: CC Number of the Customer was not found." + "\n" + "-"*60 + "\033[0m")
+                continue  
+
+            orders_consult(order_database,customer_id)
+
+            # Exit loop if all validations pass
+            break
+
     elif option == "5":
-        print()
+        Daily_Income_Calculation(order_database)
     elif option == "6":
         print()
     elif option == "7":
