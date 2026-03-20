@@ -102,7 +102,3 @@ products = {}
 while o == 0 :
     register_product(products)
     o= int(input ("Do you want to make a new register? 0 for yes, 1 for no: "))
-
-
-
-
