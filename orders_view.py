@@ -2,7 +2,7 @@ import validations
 import database
 import utilities
 
-def View_Registered_Orders():
+def view_registered_orders():
 
             # Validate if required databases are empty
             if database.product_database == {} or database.customer_database == {} or database.order_database == {}:
