@@ -2,10 +2,10 @@ import validations
 import database
 import utilities
 
-def product_registration():
+def Product_Registration():
 
             # Dictionary to store products created during this session
-            products_history = {}
+            Products_history = {}
 
             # Control variable to keep the registration active
             pr_act = True
@@ -123,7 +123,7 @@ def product_registration():
                 print("\n\033[34m" + "-"*60 + "\033[0m")
 
                 # Register product in database and history
-                register_product(product_name, product_price, product_stock, product_categorie,products_history)
+                register_product(product_name, product_price, product_stock, product_categorie,Products_history)
 
                 # Ask user if they want to continue
                 exit = utilities.confirm_exit()
@@ -152,7 +152,7 @@ def product_registration():
                 print("\033[34m" + "-"*60 + "\033[0m\n")
 
 
-def register_product(product_name, product_price, product_stock, product_categorie,products_history):
+def register_product(product_name, product_price, product_stock, product_categorie,Products_history):
 
     # Generate new product ID
     id_product = len(database.product_database) + 1
@@ -161,4 +161,4 @@ def register_product(product_name, product_price, product_stock, product_categor
     database.product_database [id_product] = (product_name,product_price,product_stock,database.product_categories[product_categorie-1])
 
     # Store product in temporary history
-    products_history [id_product] = (product_name,product_price,product_stock,database.product_categories[product_categorie-1])
+    Products_history [id_product] = (product_name,product_price,product_stock,database.product_categories[product_categorie-1])
