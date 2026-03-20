@@ -131,7 +131,7 @@ def order_creation():
                 print("\n\033[34m" + "-"*60 + "\033[0m")
 
                 # Add product to order
-                add_products_order(id_order, product_id, quantity_order, cont, Order_history)
+                add_products_order(id_order, product_id, quantity_order, cont, order_history)
 
                 # Ask user if they want to continue adding products
                 exit = utilities.confirm_exit()
@@ -148,7 +148,7 @@ def order_creation():
                 print("\033[34m" + "-"*60 + "\033[0m\n")
 
 
-def create_order(customer_id,Order_history):
+def create_order(customer_id,order_history):
     
     # Generate new order ID
     id_order = len(database.order_database) + 1
@@ -171,7 +171,7 @@ def create_order(customer_id,Order_history):
     return id_order
 
 
-def add_products_order(id_order, product_id, quantity_order, cont, Order_history):
+def add_products_order(id_order, product_id, quantity_order, cont, order_history):
     
     # Get product name
     product_name = database.product_database[product_id][0]
@@ -181,7 +181,7 @@ def add_products_order(id_order, product_id, quantity_order, cont, Order_history
     
     # Store product in order (main database and history)
     database.order_database[id_order]["producto"+str(cont)] = (product_id,product_name,quantity_order,total)
-    Order_history[id_order]["producto"+str(cont)] = (product_id,product_name,quantity_order,total)
+    order_history[id_order]["producto"+str(cont)] = (product_id,product_name,quantity_order,total)
 
 
 def display_order_summary(order_db):
