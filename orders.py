@@ -2,10 +2,10 @@ import validations
 import database
 import utilities
 
-def Order_Creation():
+def order_creation():
 
             # Dictionary to store order history during the session
-            Order_history = {}
+            order_history = {}
 
             # Control variable to keep adding products
             or_act = True
@@ -142,7 +142,7 @@ def Order_Creation():
                     continue
 
                 # ===== PRODUCTS CREATION HISTORY =====
-                display_order_summary(Order_history)
+                display_order_summary(order_history)
 
                 # Final separator
                 print("\033[34m" + "-"*60 + "\033[0m\n")
